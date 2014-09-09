@@ -19,7 +19,7 @@ executables = [
         base=base,
         shortcutName="TardisDiff",
         shortcutDir="DesktopFolder",
-        #icon="tardis.ico" Google for a fancy tardis icon until I've made one myself.
+        #icon="tardis.ico" Google for a fancy tardis icon until I've made one.
         )
 ]
 
@@ -31,7 +31,7 @@ options = {
 }
 
 setup(name='TardisDiff',
-      version='0.1',
+      version='1.0.0',
       description='TardisDiff is a tool to output the time you worked today.',
       options=dict(build_exe=buildOptions),
       executables=executables
