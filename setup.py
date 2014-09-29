@@ -5,13 +5,14 @@ from cx_Freeze import setup, Executable
 # fine tuning.
 copyfiles = [
     ('C:\Python34\Lib\site-packages\PyQt5\libEGL.dll', 'libEGL.dll'),
-    'tardis.ico'  # Google for a fancy tardis icon until I've made one
+    'tardis.ico',  # Google for a fancy tardis icon until I've made one
+    'LICENSE'
     ]
 buildOptions = dict(packages=[], excludes=[], include_files=copyfiles)
 
 # GUI applications require a different base on Windows (the default is for a
 # console application).
-base = None
+base = "Console"
 if sys.platform == "win32":
     base = "Win32GUI"
 
@@ -29,8 +30,12 @@ options = {
     'build_exe': {
         'include_files': [],
         'path': sys.path + ['modules']
+    },
+    "bdist_msi": {
+        'upgrade-code': '{22456291-8eb9-4383-86db-e34658f10242}'
     }
 }
+
 
 setup(name='TardisDiff',
       version='1.0.0',
