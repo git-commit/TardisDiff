@@ -1,6 +1,7 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
 import ctypes
+from uptime import boottime
 
 
 class TardisDiff(QtWidgets.QMainWindow):
@@ -34,10 +35,8 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.label_breakTime.setText("Break Time:")
         self.label_timeDiff.setText("Difference")
         self.label_timeDiffOut.setText("")
-        self.timeEdit1.setTime(QtCore.QTime(8, 0))
-        currentTime = QtCore.QTime.currentTime()
-        currentTime.setHMS(currentTime.hour(), currentTime.minute(), 0)
-        self.timeEdit2.setTime(currentTime)
+        self.timeEdit1.setTime(self.getBootTimeAsQTime())
+        self.timeEdit2.setTime(QtCore.QTime.currentTime())
 
         #Set relations
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole,
@@ -67,7 +66,6 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.timeEditBreakTime.timeChanged.connect(self.inputChanged)
 
         self.setWindowTitle('TardisDiff')
-        QtCore.QMetaObject.connectSlotsByName(self)
         self.inputChanged()
         self.show()
 
@@ -88,6 +86,9 @@ class TardisDiff(QtWidgets.QMainWindow):
         """Sets the current diff text to clipboard"""
         self.clipboard.setText(str(self.diff))
         self.statusBar().showMessage("Copied to clipboard.")
+
+    def getBootTimeAsQTime(self):
+        return QtCore.QDateTime(boottime()).time()
 
 
 def main():
