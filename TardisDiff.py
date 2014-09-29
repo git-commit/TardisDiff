@@ -1,5 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
+import ctypes
 
 
 class TardisDiff(QtWidgets.QMainWindow):
@@ -7,10 +8,11 @@ class TardisDiff(QtWidgets.QMainWindow):
     def __init__(self):
         super(TardisDiff, self).__init__()
         self.diff = 0
-
         self.clipboard = QtWidgets.QApplication.clipboard()
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+C"), self,
                             self.setClipboard)
+        # Google for a fancy tardis icon until I've made one
+        self.setWindowIcon(QtGui.QIcon('tardis.ico'))
         self.initUI()
 
     def initUI(self):
@@ -95,4 +97,15 @@ def main():
 
 
 if __name__ == '__main__':
+    myappid = 'net.xerael.tardisdiff'
+    if sys.platform == "win32":
+        """
+        This is for collapsing on the task bar on windows 7/8 and using
+        the application icon on the task bar instead of the python icon
+        if running using a python executable.
+
+        See:
+        http://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7
+        """
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     main()

@@ -4,7 +4,9 @@ from cx_Freeze import setup, Executable
 # Dependencies are automatically detected, but it might need
 # fine tuning.
 copyfiles = [
-    ('C:\Python34\Lib\site-packages\PyQt5\libEGL.dll', 'libEGL.dll')]
+    ('C:\Python34\Lib\site-packages\PyQt5\libEGL.dll', 'libEGL.dll'),
+    'tardis.ico'  # Google for a fancy tardis icon until I've made one
+    ]
 buildOptions = dict(packages=[], excludes=[], include_files=copyfiles)
 
 # GUI applications require a different base on Windows (the default is for a
@@ -19,7 +21,7 @@ executables = [
         base=base,
         shortcutName="TardisDiff",
         shortcutDir="DesktopFolder",
-        #icon="tardis.ico" Google for a fancy tardis icon until I've made one.
+        icon="tardis.ico"  # Google for a fancy tardis icon until I've made one
         )
 ]
 
