@@ -1,6 +1,7 @@
 import sys
+import os
+import inspect
 from PyQt5 import QtWidgets, QtCore, QtGui
-import ctypes
 from uptime import boottime
 
 
@@ -10,10 +11,22 @@ class TardisDiff(QtWidgets.QMainWindow):
         super(TardisDiff, self).__init__()
         self.diff = 0
         self.clipboard = QtWidgets.QApplication.clipboard()
+        # Set hotkeys
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+C"), self,
                             self.setClipboard)
+
+        # Get directory path
+        # From: http://stackoverflow.com/questions/3718657/how-to-properly-determine-current-script-directory-in-python/22881871#22881871
+        if getattr(sys, 'frozen', False):  # py2exe, PyInstaller, cx_Freeze
+            script_path = os.path.abspath(sys.executable)
+        else:
+            script_path = inspect.getabsfile(TardisDiff)
+        script_path = os.path.realpath(script_path)
+        script_path = os.path.dirname(script_path)
+
         # Google for a fancy tardis icon until I've made one
-        self.setWindowIcon(QtGui.QIcon('tardis.ico'))
+        self.setWindowIcon(QtGui.QIcon(
+            os.path.join(script_path, 'tardis.ico')))
         self.initUI()
 
     def initUI(self):
@@ -92,12 +105,7 @@ class TardisDiff(QtWidgets.QMainWindow):
 
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)
-    ed = TardisDiff()
-    sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
+    '''
     myappid = 'net.xerael.tardisdiff'
     if sys.platform == "win32":
         """
@@ -109,4 +117,11 @@ if __name__ == '__main__':
         http://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7
         """
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    '''
+    app = QtWidgets.QApplication(sys.argv)
+    ed = TardisDiff()
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
     main()
