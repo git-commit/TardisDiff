@@ -3,6 +3,7 @@ import os
 import inspect
 from PyQt5 import QtWidgets, QtCore, QtGui
 from uptime import boottime
+from TardisUtil import TardisOptions
 
 
 class TardisDiff(QtWidgets.QMainWindow):
@@ -11,9 +12,10 @@ class TardisDiff(QtWidgets.QMainWindow):
         super(TardisDiff, self).__init__()
         self.diff = 0
         self.clipboard = QtWidgets.QApplication.clipboard()
-        # Set hotkeys
+        # Set hot keys
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+C"), self,
                             self.setClipboard)
+        self.options = TardisOptions()
 
         # Get directory path
         # From: http://stackoverflow.com/questions/3718657/how-to-properly-determine-current-script-directory-in-python/22881871#22881871
@@ -30,7 +32,7 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.initUI()
 
     def initUI(self):
-        #Create and initialize UI elements
+        # Create and initialize UI elements
         self.contentWidget = QtWidgets.QWidget()
         self.gridLayout = QtWidgets.QGridLayout(self.contentWidget)
         self.formLayout = QtWidgets.QFormLayout()
@@ -48,7 +50,7 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.label_breakTime.setText("Break Time:")
         self.label_timeDiff.setText("Difference")
         self.label_timeDiffOut.setText("")
-        self.timeEdit1.setTime(self.getBootTimeAsQTime())
+        self.timeEdit1.setTime(self.getStartTime())
         self.timeEdit2.setTime(QtCore.QTime.currentTime())
 
         #Set relations
@@ -100,24 +102,17 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.clipboard.setText(str(self.diff))
         self.statusBar().showMessage("Copied to clipboard.")
 
-    def getBootTimeAsQTime(self):
+    def getStartTime(self):
+        return TardisDiff.getBootTimeAsQTime()\
+            if self.options.isStartTimeAuto()\
+            else QtCore.QTime.fromString(self.options.getStartTime())
+
+    @staticmethod
+    def getBootTimeAsQTime():
         return QtCore.QDateTime(boottime()).time()
 
 
 def main():
-    '''
-    myappid = 'net.xerael.tardisdiff'
-    if sys.platform == "win32":
-        """
-        This is for collapsing on the task bar on windows 7/8 and using
-        the application icon on the task bar instead of the python icon
-        if running using a python executable.
-
-        See:
-        http://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7
-        """
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-    '''
     app = QtWidgets.QApplication(sys.argv)
     ed = TardisDiff()
     sys.exit(app.exec_())
