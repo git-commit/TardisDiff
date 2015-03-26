@@ -2,23 +2,31 @@ import sys
 import os
 import inspect
 from PyQt5 import QtWidgets, QtCore, QtGui
+import plugnplay
 from uptime import boottime
-from TardisUtil import TardisOptions
+from TardisUtil import TardisOptions, TimeSubmitter
 
 
 class TardisDiff(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TardisDiff, self).__init__()
-        self.diff = 0
+        self.difference = 0
         self.clipboard = QtWidgets.QApplication.clipboard()
+
         # Set hot keys
         QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+C"), self,
                             self.setClipboard)
+        QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Shift+T"), self,
+                            self.notify_time_submitters)
         self.options = TardisOptions()
 
+        # Get plugins
+        plugnplay.plugin_dirs = ['./plugins', ]
+        plugnplay.load_plugins()
+
         # Get directory path
-        # From: http://stackoverflow.com/questions/3718657/how-to-properly-determine-current-script-directory-in-python/22881871#22881871
+        # From: http://stackoverflow.com/a/22881871/1963958
         if getattr(sys, 'frozen', False):  # py2exe, PyInstaller, cx_Freeze
             script_path = os.path.abspath(sys.executable)
         else:
@@ -53,7 +61,7 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.timeEdit1.setTime(self.getStartTime())
         self.timeEdit2.setTime(QtCore.QTime.currentTime())
 
-        #Set relations
+        # Set relations
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole,
                                   self.label_time1)
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole,
@@ -75,7 +83,7 @@ class TardisDiff(QtWidgets.QMainWindow):
 
         self.statusBar()
 
-        #connect slots
+        # connect slots
         self.timeEdit1.timeChanged.connect(self.inputChanged)
         self.timeEdit2.timeChanged.connect(self.inputChanged)
         self.timeEditBreakTime.timeChanged.connect(self.inputChanged)
@@ -93,19 +101,22 @@ class TardisDiff(QtWidgets.QMainWindow):
         time1 = self.timeEdit1.time()
         time2 = self.timeEdit2.time()
         breakTime = self.timeEditBreakTime.time().secsTo(QtCore.QTime(0, 0))
-        self.diff = (time1.secsTo(time2) + breakTime) / 3600
-        self.diff = round(self.diff, 2)
-        self.label_timeDiffOut.setText(str(self.diff))
+        self.difference = (time1.secsTo(time2) + breakTime) / 3600
+        self.difference = round(self.difference, 2)
+        self.label_timeDiffOut.setText(str(self.difference))
 
     def setClipboard(self):
         """Sets the current diff text to clipboard"""
-        self.clipboard.setText(str(self.diff))
+        self.clipboard.setText(str(self.difference))
         self.statusBar().showMessage("Copied to clipboard.")
 
     def getStartTime(self):
         return TardisDiff.getBootTimeAsQTime()\
             if self.options.isStartTimeAuto()\
             else QtCore.QTime.fromString(self.options.getStartTime())
+
+    def notify_time_submitters(self):
+        TimeSubmitter.submit_time(self.difference)
 
     @staticmethod
     def getBootTimeAsQTime():

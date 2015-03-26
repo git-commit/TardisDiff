@@ -1,5 +1,7 @@
 import configparser
 import os
+from plugnplay import Interface
+
 
 class TardisOptions:
 
@@ -50,3 +52,9 @@ class TardisOptions:
 
                                 }
         return config
+
+
+class TimeSubmitter(Interface):
+
+    def submit_time(self, duration):
+        pass
