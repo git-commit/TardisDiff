@@ -44,40 +44,37 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.contentWidget = QtWidgets.QWidget()
         self.gridLayout = QtWidgets.QGridLayout(self.contentWidget)
         self.formLayout = QtWidgets.QFormLayout()
-        self.label_time1 = QtWidgets.QLabel(self.contentWidget)
-        self.label_time2 = QtWidgets.QLabel(self.contentWidget)
-        self.label_breakTime = QtWidgets.QLabel(self.contentWidget)
         self.timeEdit1 = QtWidgets.QTimeEdit(self.contentWidget)
         self.timeEdit2 = QtWidgets.QTimeEdit(self.contentWidget)
         self.timeEditBreakTime = QtWidgets.QTimeEdit(self.contentWidget)
-        self.label_timeDiff = QtWidgets.QLabel(self.contentWidget)
+        self.timeEditBreakTime.setDisplayFormat("h:mm")
+        self.timeEditBreakTime.setCurrentSection(
+            QtWidgets.QDateTimeEdit.MinuteSection)
+        self.timeEditBreakTime.setTime(QtCore.QTime(0, 30))
         self.label_timeDiffOut = QtWidgets.QLabel(self.contentWidget)
+        self.button_time1_now = QtWidgets.QPushButton(
+            "Now", self.contentWidget)
+        self.button_time2_now = QtWidgets.QPushButton(
+            "Now", self.contentWidget)
 
-        self.label_time1.setText("Time 1:")
-        self.label_time2.setText("Time 2:")
-        self.label_breakTime.setText("Break Time:")
-        self.label_timeDiff.setText("Difference")
         self.label_timeDiffOut.setText("")
         self.timeEdit1.setTime(self.getStartTime())
         self.timeEdit2.setTime(QtCore.QTime.currentTime())
 
-        # Set relations
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole,
-                                  self.label_time1)
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole,
-                                  self.timeEdit1)
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole,
-                                  self.label_time2)
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole,
-                                  self.timeEdit2)
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole,
-                                  self.label_breakTime)
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole,
-                                  self.timeEditBreakTime)
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole,
-                                  self.label_timeDiff)
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole,
-                                  self.label_timeDiffOut)
+        # Add UI elements
+        row1 = QtWidgets.QHBoxLayout()
+        row1.addWidget(self.timeEdit1)
+        row1.addWidget(self.button_time1_now)
+
+        row2 = QtWidgets.QHBoxLayout()
+        row2.addWidget(self.timeEdit2)
+        row2.addWidget(self.button_time2_now)
+
+        self.formLayout.addRow("Time 1:", row1)
+        self.formLayout.addRow("Time 2:", row2)
+        self.formLayout.addRow("Break Time:", self.timeEditBreakTime)
+        self.formLayout.addRow("Difference:", self.label_timeDiffOut)
+
         self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 1)
         self.setCentralWidget(self.contentWidget)
 
@@ -87,6 +84,8 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.timeEdit1.timeChanged.connect(self.inputChanged)
         self.timeEdit2.timeChanged.connect(self.inputChanged)
         self.timeEditBreakTime.timeChanged.connect(self.inputChanged)
+        self.button_time1_now.pressed.connect(self.reset_time1)
+        self.button_time2_now.pressed.connect(self.reset_time2)
 
         self.setWindowTitle('TardisDiff')
         self.inputChanged()
@@ -104,6 +103,12 @@ class TardisDiff(QtWidgets.QMainWindow):
         self.difference = (time1.secsTo(time2) + breakTime) / 3600
         self.difference = round(self.difference, 2)
         self.label_timeDiffOut.setText(str(self.difference))
+
+    def reset_time1(self):
+        self.timeEdit1.setTime(QtCore.QTime.currentTime())
+
+    def reset_time2(self):
+        self.timeEdit2.setTime(QtCore.QTime.currentTime())
 
     def setClipboard(self):
         """Sets the current diff text to clipboard"""
