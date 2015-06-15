@@ -34,7 +34,7 @@ bdist_msi_options = {
 
 
 setup(name='TardisDiff',
-      version='1.0.0',
+      version='1.0.1',
       description='TardisDiff is a tool to output the time you worked today.',
       url='https://github.com/git-commit/TardisDiff',
       author='Maximilian Berger',
