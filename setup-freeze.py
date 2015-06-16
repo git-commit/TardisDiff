@@ -15,7 +15,7 @@ executables = [
         base=base,
         shortcutName="TardisDiff",
         shortcutDir="DesktopFolder",
-        icon="tardis.ico"  # Google for a fancy tardis icon until I've made one
+        icon="icon\\tardis-by-camilla-isabell-kasbo.ico"
         )
 ]
 
@@ -23,7 +23,7 @@ executables = [
 # fine tuning.
 copyfiles = [
     ('C:\Python34\Lib\site-packages\PyQt5\libEGL.dll', 'libEGL.dll'),
-    'tardis.ico',  # Google for a fancy tardis icon until I've made one
+    ('icon\\tardis-by-camilla-isabell-kasbo.ico','icon\\tardis-by-camilla-isabell-kasbo.ico'),
     'LICENSE'
     ]
 build_exe_options = dict(packages=[], excludes=[], include_files=copyfiles)
@@ -34,7 +34,7 @@ bdist_msi_options = {
 
 
 setup(name='TardisDiff',
-      version='1.0.1',
+      version='1.0.0',
       description='TardisDiff is a tool to output the time you worked today.',
       url='https://github.com/git-commit/TardisDiff',
       author='Maximilian Berger',

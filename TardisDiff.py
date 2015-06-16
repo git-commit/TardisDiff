@@ -36,7 +36,7 @@ class TardisDiff(QtWidgets.QMainWindow):
 
         # Google for a fancy tardis icon until I've made one
         self.setWindowIcon(QtGui.QIcon(
-            os.path.join(script_path, 'tardis.ico')))
+            os.path.join(script_path, 'icon', 'tardis-by-camilla-isabell-kasbo.ico')))
         self.initUI()
 
     def initUI(self):
